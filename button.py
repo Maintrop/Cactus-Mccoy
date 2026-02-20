@@ -1,39 +1,40 @@
-import pygame
+from pygame import *
 
 class Button:
-    def __init__(self, x, y, width, height, font, color, text, text_color, border_color, border_size):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.font = font
+    def __init__(self, x, y, width, height, color, font, text, text_color, border_radius, border_width=6):
+        self.rect = Rect(x, y, width, height)
         self.color = color
+        self.font = font
         self.text = text
         self.text_color = text_color
         self.hover_color = tuple(min(255, i + 40) for i in self.color)
-        self.text_hover_color = tuple(min(255, i + 40) for i in self.text_color)
-        self.border_color = border_color
-        self.border_size = border_size
+        self.hover_text_color = tuple(min(255, i + 40) for i in self.text_color)
+        self.border_color = tuple(max(1, i - 10) for i in self.color)
+        self.border_radius = border_radius
+        self.border_width = border_width
+
+    def is_hovered(self):
+        return self.rect.collidepoint(mouse.get_pos())
 
     def show(self, window):
-        # Мишка
-        mouse = pygame.mouse.get_pos()
+        player_mouse = mouse.get_pos()
 
-        if self.rect.collidepoint(mouse):
-            pygame.draw.rect(window, self.hover_color, self.rect, border_radius=self.border_size)
-            text_btn = self.font.render(self.text, True, self.text_hover_color)
+        if self.rect.collidepoint(player_mouse):
+            draw.rect(window, self.hover_color, self.rect, border_radius=self.border_radius)
+            text_btn = self.font.render(self.text, True, self.hover_text_color)
             text_rect = text_btn.get_rect(center=self.rect.center)
-            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+            mouse.set_cursor(SYSTEM_CURSOR_HAND)
         else:
-            pygame.draw.rect(window, self.color, self.rect, border_radius=self.border_size)
+            draw.rect(window, self.color, self.rect, border_radius=self.border_radius)
             text_btn = self.font.render(self.text, True, self.text_color)
             text_rect = text_btn.get_rect(center=self.rect.center)
-            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+            mouse.set_cursor(SYSTEM_CURSOR_ARROW)
 
         window.blit(text_btn, text_rect)
-        pygame.draw.rect(window, self.border_color, self.rect, 4, border_radius=self.border_size)
+        draw.rect(window, self.border_color, self.rect, self.border_width, border_radius=self.border_radius)
 
     def is_clicked(self, events):
         for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if self.rect.collidepoint(event.pos):
-                    return True
-                
+            if event.type == MOUSEBUTTONDOWN and event.button == 1 and self.is_hovered():
+                return True
         return False
