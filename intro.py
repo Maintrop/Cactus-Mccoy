@@ -1,26 +1,19 @@
+# Модулі
 import pygame, sys, mixer
 pygame.init()
 pygame.mixer.init()
 
-# Розміри вікна
-WIDTH = 1200
-HEIGHT = 750
-
-# Кількість кадрів за секунду
-FPS = 60
-
-# Кольори
-BLACK = (0, 0, 0)
+from config import WIDTH, HEIGHT, FPS, BLACK
 
 # Функція
-def play_intro(window):
+def intro(window):
     clock = pygame.time.Clock()
     pygame.mixer.init()
 
-    logo_FS = pygame.image.load("images/flipline_logo.png").convert_alpha() # convert_alpha - оптимізація зображення
+    logo_FS = pygame.image.load("assets/images/flipline_logo.png").convert_alpha() # convert_alpha - оптимізація зображення
 
     # Чорна смуга
-    black_stripe = pygame.image.load("images/black_stripe.png")
+    black_stripe = pygame.image.load("assets/images/black_stripe.png")
     black_stripe_size = (WIDTH, HEIGHT//5)
     black_stripe = pygame.transform.smoothscale(black_stripe, black_stripe_size)
 
@@ -30,7 +23,7 @@ def play_intro(window):
     state = "grow"
     timer = 0
 
-    sound_FS = pygame.mixer.Sound("audios/Flipline_Studios_intro.mp3")
+    sound_FS = pygame.mixer.Sound("assets/audios/sounds/Flipline_Studios_intro.mp3")
 
     x = WIDTH//2
     y = HEIGHT//2
@@ -41,7 +34,7 @@ def play_intro(window):
     while running_FS:
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
-                pygame.quit()
+                sys.exit()
 
         window.fill(BLACK)
 
