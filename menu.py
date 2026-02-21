@@ -3,7 +3,7 @@ from pygame import *
 import sys
 
 from button import Button
-from config import FPS, HEIGHT, WIDTH, BLACK, GRAY, YELLOW, BROWN, DARK_RED, LIGHT_RED
+from config import FPS, HEIGHT, WIDTH, BLACK, GRAY, YELLOW, BROWN, DARK_RED, LIGHT_RED, LIGHT_GRAY
 from fade import Fade
 import save_data
 
@@ -14,7 +14,7 @@ def menu(window):
     # Годинник
     clock = time.Clock()
 
-    # Чорні смуги
+    # Зображення
     black_stripe1 = image.load("assets/images/black_stripe.png").convert_alpha()
     black_stripe1_size = (WIDTH, 150)
     black_stripe1 = transform.smoothscale(black_stripe1, black_stripe1_size)
@@ -24,6 +24,16 @@ def menu(window):
     menu_bg = image.load("assets/images/menu_bg.jpg")
     menu_bg_size = (WIDTH+40, HEIGHT//1.5)
     menu_bg = transform.smoothscale(menu_bg, menu_bg_size)
+
+    slots = [
+        image.load("assets/images/empty_slot.png").convert_alpha(),
+        image.load("assets/images/empty_slot.png").convert_alpha(),
+        image.load("assets/images/empty_slot.png").convert_alpha()
+    ]
+
+    # Тексти
+    slots_title_font = font.SysFont(None, 85)
+    slots_title = slots_title_font.render("CHOOSE A SLOT", True, LIGHT_GRAY)
 
     # Музика
     mixer.music.load("assets/audios/music/menu.ogg")
@@ -35,7 +45,7 @@ def menu(window):
     font_btn_back = font.SysFont(None, 40)
 
     btn_play = Button(WIDTH//2-150, 565, 300, 75, YELLOW, font_btn_play, "Start Game!", BROWN, 32)
-    btn_music = Button(WIDTH-110, HEIGHT-110, 100, 100, GRAY, font_btn_music, "ON" if save_data.music else "OFF", BLACK, 32)
+    btn_music = Button(WIDTH-110, HEIGHT-100, 100, 90, GRAY, font_btn_music, "ON" if save_data.music else "OFF", BLACK, 32)
 
     btn_back = Button(20, 20, 150, 50, LIGHT_RED, font_btn_back, "Exit", DARK_RED, 16)
 
@@ -70,12 +80,16 @@ def menu(window):
                     buttons = [btn_back]
 
                 fade.start(fade_in=False, on_black=after_black)
-
+                if not fade.active:
+                    btn_music.x = 10
+                
             elif btn_music.is_clicked(events):
                 save_data.music = not save_data.music
                 save_data.reload_settings()
+                btn_music.text = "ON" if save_data.music else "OFF"
         else:
             window.fill(BLACK)
+            window.blit(slots_title, (WIDTH//3.3, 20))
 
             if btn_back.is_clicked(events):
                 selecting_slots = False
