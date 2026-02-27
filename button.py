@@ -17,18 +17,14 @@ class Button:
         return self.rect.collidepoint(mouse.get_pos())
 
     def show(self, window):
-        player_mouse = mouse.get_pos()
-
-        if self.rect.collidepoint(player_mouse):
+        if self.is_hovered():
             draw.rect(window, self.hover_color, self.rect, border_radius=self.border_radius)
             text_btn = self.font.render(self.text, True, self.hover_text_color)
             text_rect = text_btn.get_rect(center=self.rect.center)
-            mouse.set_cursor(SYSTEM_CURSOR_HAND)
         else:
             draw.rect(window, self.color, self.rect, border_radius=self.border_radius)
             text_btn = self.font.render(self.text, True, self.text_color)
             text_rect = text_btn.get_rect(center=self.rect.center)
-            mouse.set_cursor(SYSTEM_CURSOR_ARROW)
 
         window.blit(text_btn, text_rect)
         draw.rect(window, self.border_color, self.rect, self.border_width, border_radius=self.border_radius)
