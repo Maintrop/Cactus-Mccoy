@@ -2,10 +2,6 @@
 import pygame
 
 # Функція
-import pygame
-
-import pygame
-
 class Fade:
     def __init__(self, window, speed=10, pause=2000):
         self.window = window
