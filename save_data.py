@@ -5,7 +5,7 @@ import json
 with open("settings.json", "r", encoding="utf-8") as f:
     settings = json.load(f)
 
-with open("saves.json", "r", encoding="utf-8") as f:
+with open("saves_slots/slot1.json", "r", encoding="utf-8") as f:
     saves = json.load(f)
 
 music = settings.get("music", True)
@@ -21,3 +21,18 @@ def reload_settings():
         json.dump({
             "music" : music
         }, f, ensure_ascii=False, indent=2)
+
+def load_new_data(slot_file, username):
+    try:
+        with open(slot_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+    except FileNotFoundError:
+        data = {}
+
+    data["user"] = username
+    data["level"] = 1
+    data["gold"] = 0
+
+    with open(slot_file, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
