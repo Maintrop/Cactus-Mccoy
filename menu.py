@@ -5,6 +5,7 @@ import sys
 from button import Button
 from config import FPS, HEIGHT, WIDTH, BLACK, GRAY, LIGHT_GRAY, YELLOW, BROWN, DARK_RED, LIGHT_RED, WHITE, DARK_GRAY
 from fade import Fade
+from game_intro import game_intro
 import save_data
 
 init()
@@ -15,12 +16,12 @@ def menu(window):
     clock = time.Clock()
 
     # Чорні смуги
-    black_stripe1 = image.load("assets/images/black_stripe.png").convert_alpha()
+    black_stripe1 = image.load("assets/images/menu/black_stripe.png").convert_alpha()
     black_stripe1 = transform.smoothscale(black_stripe1, (WIDTH, 150))
     black_stripe2 = transform.rotate(black_stripe1, 180)
 
     # Фон меню
-    menu_bg = image.load("assets/images/menu_bg.jpg")
+    menu_bg = image.load("assets/images/menu/menu_bg.jpg")
     menu_bg = transform.smoothscale(menu_bg, (WIDTH + 40, HEIGHT // 1.5))
 
     # Тексти
@@ -64,7 +65,7 @@ def menu(window):
     buttons = [btn_play, btn_music]
 
     slot_positions = [(200, 175), (500, 175), (800, 175)]
-    slots = [transform.scale(image.load("assets/images/slot.png").convert_alpha(), (250, 350)) for _ in range(3)]
+    slots = [transform.scale(image.load("assets/images/menu/slot.png").convert_alpha(), (250, 350)) for _ in range(3)]
 
     fade = Fade(window)
 
@@ -74,6 +75,7 @@ def menu(window):
     show_slots = False
     inputing_username = False
     username_active = False
+    show_slot = 0
 
     # Гра
     while running:
@@ -150,14 +152,21 @@ def menu(window):
                         show_slots = False
                         inputing_username = True
                         buttons = [btn_menu_exit, btn_music, btn_menu_input_back, btn_menu_input_next]
+                        
+                    if slot_buttons[0].is_clicked(events):
+                        show_slot = 1
+                    elif slot_buttons[1].is_clicked(events):
+                        show_slot = 2
+                    elif slot_buttons[2].is_clicked(events):
+                        show_slot = 3
 
             else:
                 if inputing_username:
-                    draw.rect(window, DARK_GRAY, menu_input_box)
+                    draw.rect(window, DARK_GRAY, menu_input_box, border_radius=8)
                     window.blit(menu_input_title, (menu_input_box.x+70, menu_input_box.y+25))
 
-                    draw.rect(window, GRAY, username_box)
-                    draw.rect(window, YELLOW if username_active else BLACK, username_box, 2)
+                    draw.rect(window, GRAY, username_box, border_radius=8)
+                    draw.rect(window, LIGHT_GRAY if username_active else BLACK, username_box, 2, border_radius=8)
 
                     username_surface = font_btn_menu_input.render(username, True, BLACK)
                     window.blit(username_surface, (username_box.x + 10, username_box.y + 10))
@@ -166,10 +175,17 @@ def menu(window):
                         show_slots = True
                         inputing_username = False
                         buttons = [btn_menu_exit, btn_music]
+                        username = ""
 
                     if btn_menu_input_next.is_clicked(events):
                         if username.strip() != "":
-                            pass
+                            if show_slot == 1:
+                                save_data.load_new_data("saves_slots/slot1.json", username.strip())
+                            elif show_slot == 2:
+                                save_data.load_new_data("saves_slots/slot2.json", username.strip())
+                            elif show_slot == 3:
+                                save_data.load_new_data("saves_slots/slot3.json", username.strip())
+                            game_intro(window)
 
         for btn in buttons:
             btn.show(window)
