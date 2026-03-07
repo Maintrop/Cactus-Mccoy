@@ -8,6 +8,8 @@ YELLOW = (235, 235, 0)
 BROWN = (80, 30, 20)
 DARK_RED = (139, 0, 0)
 LIGHT_RED = (255, 68, 68)
+LIGHT_GREEN = (80, 180, 20)
+LIGHT_ORANGE = (230, 170, 40)
 
 # Розміри вікна
 WIDTH = 1200
